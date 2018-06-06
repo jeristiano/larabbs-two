@@ -9,10 +9,13 @@ use Illuminate\Http\Request;
 class CategoriesController extends Controller
 {
     //
-    public function show(Category $category)
+    public function show(Category $category,Request $request,Topic $topic)
     {
         //读取分类,每条按20个分页
-        $topics=Topic::where('category_id',$category->id)->paginate(20);
+        $topics=$topic->with('user', 'category')
+            ->withOrder($request->order)
+            ->where('category_id',$category->id)
+            ->paginate(20);
         return view('topics.index',compact('topics','category'));
     }
 }
